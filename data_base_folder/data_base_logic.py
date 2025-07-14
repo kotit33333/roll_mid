@@ -28,6 +28,16 @@ def login(login, password)-> tuple[bool, str]:
             return False, 'Невеерный логин или пароль'
 
 
+def nubmer_to_data_base(login, number):
+    connection = data_base_connect.star_connecet_db()
+    with connection:
+        with connection.cursor() as cursor:
+            sql = "SELECT COUNT(*) as count FROM user WHERE login = %s"
+            cursor.execute(sql, (login,))
+            result = cursor.fetchone()
+            cursor.execute("UPDATE `user` SET `row` = CONCAT(`row`, %s) WHERE `login` = %s", (number, login))
+            connection.commit()
+            return True
 
 
 

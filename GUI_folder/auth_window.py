@@ -3,11 +3,15 @@ from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QPushButton,
     QVBoxLayout, QFormLayout, QTabWidget, QMessageBox
 )
-from GUI_folder import GUI_logic
+from GUI_folder import auth_logic
 from data_base_folder import data_base_logic
+from PyQt5.QtCore import pyqtSignal
 
 
 class AuthUI(QWidget):
+    login_successful = pyqtSignal(str)
+
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Авторизация")
@@ -73,12 +77,12 @@ class AuthUI(QWidget):
         login = self.login_username.text()
         password = self.login_password.text()
 
-        success, message = GUI_logic.login_user(login, password)
+        success, message = auth_logic.login_user(login, password)
         try:
             if success:
                 success, message = data_base_logic.login(login, password)
                 if success:
-                    QMessageBox.warning(self, "Успешно", message)
+                    self.login_successful.emit(login)  #
 
                 else:
                     QMessageBox.warning(self, "Ошибка", message)
@@ -94,7 +98,7 @@ class AuthUI(QWidget):
         password = self.input_pass.text()
         password_confirm = self.input_pass_confirm.text()
 
-        success, message = GUI_logic.register_user(login, password, password_confirm)
+        success, message = auth_logic.register_user(login, password, password_confirm)
         try:
             if success:
 
