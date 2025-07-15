@@ -1,6 +1,7 @@
 from data_base_folder import data_base_connect
+import time
 
-def registirion(login, password):
+def register_user(login, password):
     connection = data_base_connect.star_connecet_db()
     with connection:
         with connection.cursor() as cursor:
@@ -28,16 +29,28 @@ def login(login, password)-> tuple[bool, str]:
             return False, 'Невеерный логин или пароль'
 
 
-def nubmer_to_data_base(login, number):
+def add_choice_to_db(login, choice, is_correct):
+    connection = data_base_connect.star_connecet_db()
+    try:
+        with connection:
+            with connection.cursor() as cursor:
+                sql = "INSERT INTO user_choices (login, choice, is_correct) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (login, choice, is_correct))
+            connection.commit()
+        return True
+    except:
+        return False
+
+
+def get_choices(login):
     connection = data_base_connect.star_connecet_db()
     with connection:
         with connection.cursor() as cursor:
-            sql = "SELECT COUNT(*) as count FROM user WHERE login = %s"
+            sql = "SELECT choice FROM user_choices WHERE login = %s"
             cursor.execute(sql, (login,))
-            result = cursor.fetchone()
-            cursor.execute("UPDATE `user` SET `row` = CONCAT(`row`, %s) WHERE `login` = %s", (number, login))
-            connection.commit()
-            return True
+            results = cursor.fetchall()
 
+    choices = [row["choice"] for row in results]
+    return choices
 
 

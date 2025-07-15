@@ -33,6 +33,7 @@ class AuthUI(QWidget):
         self.setLayout(layout)
 
     def setup_register_ui(self):
+        """окно регистрации"""
         form = QFormLayout()
 
         self.input_login = QLineEdit()
@@ -55,6 +56,7 @@ class AuthUI(QWidget):
         self.register_tab.setLayout(layout)
 
     def setup_login_ui(self):
+        """окно входа"""
         form = QFormLayout()
 
         self.login_username = QLineEdit()
@@ -74,18 +76,15 @@ class AuthUI(QWidget):
         self.login_tab.setLayout(layout)
 
     def handle_login(self):
+        """функция принимает логин и пароль, дальше отправляет их в logic user, если проверка удачная, то открывает основное окно"""
         login = self.login_username.text()
         password = self.login_password.text()
 
         success, message = auth_logic.login_user(login, password)
         try:
             if success:
-                success, message = data_base_logic.login(login, password)
-                if success:
-                    self.login_successful.emit(login)  #
+                self.login_successful.emit(login)  #
 
-                else:
-                    QMessageBox.warning(self, "Ошибка", message)
             else:
                 QMessageBox.warning(self, "Ошибка", message)
         except Exception as e:
@@ -94,6 +93,7 @@ class AuthUI(QWidget):
             traceback.print_exc()
 
     def handle_register(self):
+        """передает в функцию проверки возможности регистарации, если все удачно, открывает основное окно"""
         login = self.input_login.text()
         password = self.input_pass.text()
         password_confirm = self.input_pass_confirm.text()
@@ -102,8 +102,8 @@ class AuthUI(QWidget):
         try:
             if success:
 
-                if data_base_logic.registirion(login, password):
-                    print('sec')
+                if data_base_logic.register_user(login, password):
+                    self.login_successful.emit(login)
                 else:
                     QMessageBox.warning(self, "Ошибка", 'Данный логин занят')
             else:

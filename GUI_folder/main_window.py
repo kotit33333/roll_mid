@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
-from data_base_folder import data_base_logic
-
+from logic_of_choice import game_logic
+from data_base_folder import  data_base_logic
 
 class MainWindow(QWidget):
     def __init__(self, username):
@@ -13,6 +13,9 @@ class MainWindow(QWidget):
         self.setWindowTitle(f"_-_")
         self.setFixedSize(500, 400)
         self.login = username
+        self.is_correct = False
+        self.info_about_choice = ()
+        self.predicted = 0
 
         self.init_ui()
 
@@ -54,8 +57,10 @@ class MainWindow(QWidget):
         self.setLayout(main_layout)
 
     def user_choice(self, number):
-        if data_base_logic.nubmer_to_data_base(self.login, number):
-            self.cube_label.setText(str(number))  # Пока программа "угадывает" то, что нажал игрок
+        self.info_about_choice = game_logic.process_user_choice(self.login, number)
+        self.predicted = self.info_about_choice[0]
+        self.is_correct = self.info_about_choice[1]
+        self.cube_label.setText(str(self.predicted)) #заменить дальше если верно - цвет зеленый, если нет - красный
 
     def show_help(self):
         QMessageBox.information(
