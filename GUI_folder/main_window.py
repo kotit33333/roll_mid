@@ -60,8 +60,11 @@ class MainWindow(QWidget):
         self.info_about_choice = game_logic.process_user_choice(self.login, number)
         self.predicted = self.info_about_choice[0]
         self.is_correct = self.info_about_choice[1]
-        self.cube_label.setText(str(self.predicted)) #заменить дальше если верно - цвет зеленый, если нет - красный
-
+        self.cube_label.setText(str(self.predicted))
+        if self.is_correct:
+            self.cube_label.setStyleSheet("color: green;")
+        else:
+            self.cube_label.setStyleSheet("color: red;")
     def show_help(self):
         QMessageBox.information(
             self,

@@ -54,3 +54,20 @@ def get_choices(login):
     return choices
 
 
+def get_stats(login):
+    connection = data_base_connect.star_connecet_db()
+    with connection:
+        with connection.cursor() as cursor:
+            sql = "SELECT COUNT(*) as total, SUM(is_correct) as correct FROM user_choices WHERE login = %s"
+            cursor.execute(sql, (login,))
+            result = cursor.fetchone()
+
+    total = result['total'] or 0
+    correct = result['correct'] or 0
+    frequency = correct / total if total > 0 else 0
+
+    return {
+        'total': total,
+        'correct': correct,
+        'frequency': frequency
+    }

@@ -19,6 +19,10 @@ class AdaptiveSelector:
             return random_mode.predict()
         elif len(self.history) < 30:
             return frequency_mode.predict(self.history)
-        else:
+        elif len(self.history) < 50:
             return pattern_mode.predict(self.history)
+        else:
+            ml_mode.train_model(self.login)
+            print('hell')
+            return ml_mode.predict(self.history)
 
